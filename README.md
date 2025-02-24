@@ -74,11 +74,11 @@ Ensure you have the following installed:
 
 ## Contributors
 - **Shrushti Chouhan**
-- **Abhhaa Narote 2**
-- **Yashasvi Singh 3**
-- **Aryan Chaudhary 4**
-- **Tejas Kumar 5**
-- **Piyush Shrivastaw6**
+- **Abhhaa Narote**
+- **Yashasvi Singh**
+- **Aryan Chaudhary**
+- **Tejas Kumar**
+- **Piyush Shrivastaw**
 
 ## License
 This project is licensed under the Apache 2.0 License.
