@@ -1,19 +1,40 @@
 const User = require("../DBmodels/User_module.js")
+const Helper = require("./helper.js");
+// Add user
 const addUser = async(userData) => {
     try {
-        const user = await User.create(userData);
+        const hashedPassword = await Helper.hashPassword(userData.password);
+        const user = await User.create(
+            {
+                username: userData.username,
+                primaryNumber: userData.primaryNumber,
+                secondaryNumber: userData.secondaryNumber,
+                address: userData.address,
+                plateNumber: userData.plateNumber,
+                password: hashedPassword
+            }
+        );
         return user;
 
     } catch (error) {
-        console.log("Problem in user_services.js");
+        console.log("Problem in user_services.js" , error);
     }
 };
-const getUser = async(plateNumber) =>{
+// Get User by plate number and password
+const getUserByPlateAndPassword = async(plateNumber, password) =>{
     try {
         const user = await User.findOne({plateNumber});
-        return user;   
-    } catch (error) {
+        const match = Helper.verifyPassword(password, user.password);
+        if(match){
+            return user;
+        }
+        else{
+            return null;
+        }
+    }
+    catch (error) {
         console.log("Problem in user_services.js" , error)
     }
 }
-module.exports = { addUser, getUser };
+
+module.exports = { addUser, getUserByPlateAndPassword};
