@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-up Page</title>
+    <link rel="stylesheet" href="sign_up.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <main class="page-wrapper">
+        <div class="login-container">
+            <form class="login-form" onsubmit="return login(event)">
+                <h2>Sign-up</h2>
+                
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Primary Mobile Number</label>
+                    <div class="phone-container">
+                        <span class="country-code">+91</span>
+                        <input type="tel" id="phone" placeholder="Enter primary number" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="secondaryPhone">Secondary Mobile Number</label>
+                    <div class="phone-container">
+                        <span class="country-code">+91</span>
+                        <input type="tel" id="secondaryPhone" placeholder="Enter secondary number" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea id="address" placeholder="Enter your address" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="carNumber">Car Registration Number</label>
+                    <input type="text" id="carNumber" placeholder="KA 01 MX 1234" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-container">
+                        <input type="password" id="password" placeholder="Enter password" required>
+                        <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar">
+                            <div class="strength-indicator"></div>
+                        </div>
+                        <span class="strength-text"></span>
+                    </div>
+                    <small class="helper-text">Password must contain at least 8 characters, including uppercase, lowercase, number, and special character</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="password-container">
+                        <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+                        <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <span>Submit</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <div id="error-message" class="error" role="alert" aria-live="polite"></div>
+            </form>
+        </div>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const phone = document.getElementById("phone");
+            const secondaryPhone = document.getElementById("secondaryPhone");
+            const errorMessage = document.getElementById("error-message");
+            const inputs = document.querySelectorAll('input');
+
+            function validatePhones() {
+                if (secondaryPhone.value && phone.value === secondaryPhone.value) {
+                    showError("Primary and secondary phone numbers cannot be the same.");
+                    secondaryPhone.style.borderColor = "var(--error-color)";
+                    return false;
+                } else {
+                    hideError();
+                    secondaryPhone.style.borderColor = "var(--border-color)";
+                    return true;
+                }
+            }
+
+            function showError(message) {
+                errorMessage.innerText = message;
+                errorMessage.style.display = 'block';
+            }
+
+            function hideError() {
+                errorMessage.innerText = '';
+                errorMessage.style.display = 'none';
+            }
+
+            phone.addEventListener('input', validatePhones);
+            secondaryPhone.addEventListener('input', validatePhones);
+
+            // Reset border colors when user starts typing
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    if (input !== secondaryPhone || !validatePhones()) {
+                        input.style.borderColor = "var(--border-color)";
+                    }
+                });
+            });
+        });
+
+        function login(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const secondaryPhone = document.getElementById("secondaryPhone").value.trim();
+            const carNumber = document.getElementById("carNumber").value.trim();
+            const errorMessage = document.getElementById("error-message");
+
+            function showError(message, element) {
+                errorMessage.innerText = message;
+                errorMessage.style.display = 'block';
+                if (element) {
+                    element.style.borderColor = "var(--error-color)";
+                }
+            }
+
+            const nameRegex = /^[A-Za-z\s]+$/;
+            if (!nameRegex.test(name)) {
+                showError("Name must contain only letters.", document.getElementById("name"));
+                return false;
+            }
+
+            const phoneRegex = /^[1-9][0-9]{9}$/;
+            if (!phoneRegex.test(phone)) {
+                showError("Primary phone must be 10 digits.", document.getElementById("phone"));
+                return false;
+            }
+
+            if (secondaryPhone) {
+                if (!phoneRegex.test(secondaryPhone)) {
+                    showError("Secondary phone must be 10 digits.", document.getElementById("secondaryPhone"));
+                    return false;
+                }
+                
+                if (phone === secondaryPhone) {
+                    showError("Primary and secondary phone numbers cannot be the same.", document.getElementById("secondaryPhone"));
+                    return false;
+                }
+            }
+
+            const carNumberRegex = /^[A-Z]{2} \d{2} [A-Z]{2} \d{4}$/;
+            if (!carNumberRegex.test(carNumber)) {
+                showError("Car registration number format 'AA 11 AA 1111'", document.getElementById("carNumber"));
+                return false;
+            }
+
+            localStorage.setItem("userName", name);
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 1000);
+
+            return true;
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const strengthIndicator = document.querySelector('.strength-indicator');
+            const strengthText = document.querySelector('.strength-text');
+            const toggleButtons = document.querySelectorAll('.toggle-password');
+    
+            // Toggle password visibility
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const input = this.previousElementSibling;
+                    const icon = this.querySelector('i');
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            });
+    
+            // Check password strength
+            function checkPasswordStrength(password) {
+                let strength = 0;
+                const patterns = {
+                    length: password.length >= 8,
+                    lowercase: /[a-z]/.test(password),
+                    uppercase: /[A-Z]/.test(password),
+                    numbers: /\d/.test(password),
+                    special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+                };
+    
+                strength += patterns.length ? 1 : 0;
+                strength += patterns.lowercase ? 1 : 0;
+                strength += patterns.uppercase ? 1 : 0;
+                strength += patterns.numbers ? 1 : 0;
+                strength += patterns.special ? 1 : 0;
+    
+                return {
+                    score: strength,
+                    patterns: patterns
+                };
+            }
+    
+            // Update password strength indicator
+            password.addEventListener('input', function() {
+                const result = checkPasswordStrength(this.value);
+                const percentage = (result.score / 5) * 100;
+                
+                strengthIndicator.style.width = `${percentage}%`;
+                
+                if (result.score === 0) {
+                    strengthIndicator.className = 'strength-indicator';
+                    strengthText.textContent = 'No password';
+                } else if (result.score <= 2) {
+                    strengthIndicator.className = 'strength-indicator weak';
+                    strengthText.textContent = 'Weak';
+                } else if (result.score <= 3) {
+                    strengthIndicator.className = 'strength-indicator medium';
+                    strengthText.textContent = 'Medium';
+                } else if (result.score <= 4) {
+                    strengthIndicator.className = 'strength-indicator strong';
+                    strengthText.textContent = 'Strong';
+                } else {
+                    strengthIndicator.className = 'strength-indicator very-strong';
+                    strengthText.textContent = 'Very Strong';
+                }
+            });
+    
+            // Validate matching passwords
+            confirmPassword.addEventListener('input', function() {
+                if (this.value !== password.value) {
+                    this.setCustomValidity('Passwords do not match');
+                } else {
+                    this.setCustomValidity('');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
