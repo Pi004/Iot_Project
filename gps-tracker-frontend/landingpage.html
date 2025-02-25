@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Safety System</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="login2.css">
+    <link rel="stylesheet" href="landingpage.css">
 </head>
 <body>
     
@@ -48,20 +48,14 @@
         </div>
 
         <div class="login-container">
-            <form class="login-form" onsubmit="return login(event)">
+            <form class="login-form" >
                 <h2>Login</h2>
-                <input type="text" id="name" placeholder="Full Name" required>
-                <div class="phone-container">
-                    <span>+91</span>
-                    <input type="tel" id="phone" placeholder="Primary Mobile Number" required>
+                <div id="loginForm">
+                    <input type="text" id="username" placeholder="Car Registration Number (KA 01 MX 1234)" required>
+                    <input type="password" id="password" placeholder="Password" required>
+                    <button type="submit">Login <i class="fas fa-arrow-right"></i></button>
+                    <p class="switch-form">Don't have an account? <a href="#" onclick="toggleForm()">Sign Up</a></p>
                 </div>
-                <div class="phone-container">
-                    <span>+91</span>
-                    <input type="tel" id="secondaryPhone" placeholder="Secondary Mobile Number">
-                </div>
-                <input type="text" id="address" placeholder="Address" required>
-                <input type="text" id="carNumber" placeholder="Car Registration Number (KA 01 MX 1234)" required>
-                <button type="submit">Login <i class="fas fa-arrow-right"></i></button>
                 <p id="error-message" class="error"></p>
             </form>
         </div>
@@ -69,76 +63,105 @@
     <footer class="footer">
         <p>All Rights Reserved @2025</p>
     </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const phone = document.getElementById("phone");
-            const secondaryPhone = document.getElementById("secondaryPhone");
-            const errorMessage = document.getElementById("error-message");
-
-            function validatePhones() {
-                if (secondaryPhone.value && phone.value === secondaryPhone.value) {
-                    errorMessage.innerText = "Primary and secondary phone numbers cannot be the same.";
-                    secondaryPhone.style.borderColor = "#dc3545";
-                    return false;
-                } else {
-                    errorMessage.innerText = "";
-                    secondaryPhone.style.borderColor = "#e1e1e1";
-                    return true;
-                }
-            }
-
-            phone.addEventListener('input', validatePhones);
-            secondaryPhone.addEventListener('input', validatePhones);
-        });
-
-        function login(event) {
-            event.preventDefault();
-
-            const name = document.getElementById("name").value.trim();
-            const phone = document.getElementById("phone").value.trim();
-            const secondaryPhone = document.getElementById("secondaryPhone").value.trim();
-            const carNumber = document.getElementById("carNumber").value.trim();
-            const errorMessage = document.getElementById("error-message");
-
-            const nameRegex = /^[A-Za-z\s]+$/;
-            if (!nameRegex.test(name)) {
-                errorMessage.innerText = "Name must contain only letters.";
-                return false;
-            }
-
-            const phoneRegex = /^[1-9][0-9]{9}$/;
-            if (!phoneRegex.test(phone)) {
-                errorMessage.innerText = "Primary phone must be 10 digits.";
-                return false;
-            }
-
-            if (secondaryPhone) {
-                if (!phoneRegex.test(secondaryPhone)) {
-                    errorMessage.innerText = "Secondary phone must be 10 digits.";
-                    return false;
-                }
+    <!-- <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelector(".login-form").addEventListener("submit", function (e) {
+                e.preventDefault();  // Stop the form from submitting normally
                 
-                if (phone === secondaryPhone) {
-                    errorMessage.innerText = "Primary and secondary phone numbers cannot be the same.";
-                    return false;
+                // Get the input values
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value.trim();
+                const errorMessage = document.getElementById('error-message');
+                
+                // Validate car registration number format
+                const carNumberRegex = /^[A-Z]{2} \d{2} [A-Z]{2} \d{4}$/;
+                
+                if (!carNumberRegex.test(username)) {
+                    errorMessage.textContent = "Car registration number format: GA 01 EE 9669 ";
+                    errorMessage.style.display = 'block';
+                    return;  // Stop further execution
+                } 
+                
+                if (password === "") {
+                    errorMessage.textContent = "Password cannot be empty";
+                    errorMessage.style.display = 'block';
+                    return;  // Stop further execution
                 }
-            }
-
-            const carNumberRegex = /^[A-Z]{2} \d{2} [A-Z]{2} \d{4}$/;
-            if (!carNumberRegex.test(carNumber)) {
-                errorMessage.innerText = "Car registration number must be in 'AA 11 AA 1111' format.";
-                return false;
-            }
-
-            localStorage.setItem("userName", name);
-
-            setTimeout(() => {
-                window.location.href = "dashboard.html";
-            }, 1000);
-
-            return true;
+    
+                // If validation passes, redirect to dashboard
+                window.location.href = 'dashboard.html';
+            });
+        });
+        // Function to redirect to signup page
+        function toggleForm() {
+            window.location.href = 'sign_up.html';
         }
+    </script>         -->
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector(".login-form").addEventListener("submit", async function (e) {
+            e.preventDefault();  // Stop the form from submitting normally
+            
+            // Get the input values
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorMessage = document.getElementById('error-message');
+    
+            // Validate car registration number format
+            const carNumberRegex = /^[A-Z]{2} \d{2} [A-Z]{2} \d{4}$/;
+    
+            if (!carNumberRegex.test(username)) {
+                errorMessage.textContent = "Car registration number format: GA 01 EE 9669";
+                errorMessage.style.display = 'block';
+                return;  // Stop further execution
+            } 
+    
+            if (password === "") {
+                errorMessage.textContent = "Password cannot be empty";
+                errorMessage.style.display = 'block';
+                return;  // Stop further execution
+            }
+    
+            // Backend API URL (Replace with your actual API endpoint)
+            const apiUrl = `https://your-backend-api.com/api/getUser?username=${username}`;
+    
+            try {
+                // Send GET request to fetch user details
+                const response = await fetch(apiUrl, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+    
+                const data = await response.json();
+    
+                if (response.ok) {
+                    // Check if entered password matches the stored password
+                    if (password === data.password) {
+                        // Save token and redirect
+                        localStorage.setItem("authToken", data.token);
+                        window.location.href = "dashboard.html";
+                    } else {
+                        errorMessage.textContent = "Incorrect password!";
+                        errorMessage.style.display = "block";
+                    }
+                } else {
+                    errorMessage.textContent = data.message || "User not found!";
+                    errorMessage.style.display = "block";
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                errorMessage.textContent = "Server error. Please try again later.";
+                errorMessage.style.display = "block";
+            }
+        });
+    });
+    
+    // Function to redirect to signup page
+    function toggleForm() {
+        window.location.href = 'sign_up.html';
+    }
     </script>
 </body>
 </html>
