@@ -3,7 +3,7 @@ const gps_services = require("../Services/gps_services");
 // GET: Last Known Location
 const getLastLocation = async (req, res) => {
     try {
-        const { platenumber } = req.params;
+        const { platenumber } = req.body;
         const lastLocation = await gps_services.getLastLocation(platenumber);
         if (!lastLocation) {
             return res.status(404).json({ success: false, message: "No data found" });
@@ -17,7 +17,7 @@ const getLastLocation = async (req, res) => {
 // GET: Location History
 const getLocationHistory = async (req, res) => {
     try {
-        const { platenumber } = req.params;
+        const { platenumber } = req.body;
         const locations = await gps_services.getLocationHistory(platenumber);
         res.json({ success: true, data: locations });
     } catch (error) {
