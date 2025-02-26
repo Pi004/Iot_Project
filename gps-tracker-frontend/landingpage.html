@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Safety System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="landingpage.css">
+</head>
+<body>
+    
+    <div class="header">
+        <h1 class="main-title">Proactive Accident Mitigation and Enhanced Safety</h1>
+    </div>
+    <div class="container">
+        <div class="content-section">
+            <h2 class="features-title">About Us</h2>
+            <p class="description">
+                This system is designed to enhance vehicle safety by leveraging advanced sensor technologies and real-time data processing. Our smart accident detection mechanism identifies potential collisions and immediately shares critical information, including GPS location, with registered contacts. It also tells us the status of the driver such as Drowsiness, Alcohol level, etc.
+            </p>
+            <h2 class="features-title">Features</h2>
+            <div class="feature-points">
+                <div class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Real-time Accident Detection</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-location-dot"></i>
+                    <span>GPS Tracking</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Anti-Theft System</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Instant Alerts</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Evidence Capture</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Cloud Storage</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-container">
+            <form class="login-form" >
+                <h2>Login</h2>
+                <div id="loginForm">
+                    <input type="text" id="username" placeholder="Car Registration Number (KA 01 MX 1234)" required>
+                    <input type="password" id="password" placeholder="Password" required>
+                    <button type="submit">Login <i class="fas fa-arrow-right"></i></button>
+                    <p class="switch-form">Don't have an account? <a href="#" onclick="toggleForm()">Sign Up</a></p>
+                </div>
+                <p id="error-message" class="error"></p>
+            </form>
+        </div>
+    </div>
+    <footer class="footer">
+        <p>All Rights Reserved @2025</p>
+    </footer>
+    <!-- <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelector(".login-form").addEventListener("submit", function (e) {
+                e.preventDefault();  // Stop the form from submitting normally
+                
+                // Get the input values
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value.trim();
+                const errorMessage = document.getElementById('error-message');
+                
+                // Validate car registration number format
+                const carNumberRegex = /^[A-Z]{2} \d{2} [A-Z]{2} \d{4}$/;
+                
+                if (!carNumberRegex.test(username)) {
+                    errorMessage.textContent = "Car registration number format: GA 01 EE 9669 ";
+                    errorMessage.style.display = 'block';
+                    return;  // Stop further execution
+                } 
+                
+                if (password === "") {
+                    errorMessage.textContent = "Password cannot be empty";
+                    errorMessage.style.display = 'block';
+                    return;  // Stop further execution
+                }
+    
+                // If validation passes, redirect to dashboard
+                window.location.href = 'dashboard.html';
+            });
+        });
+        // Function to redirect to signup page
+        function toggleForm() {
+            window.location.href = 'sign_up.html';
+        }
+    </script>         -->
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector(".login-form").addEventListener("submit", async function (e) {
+            e.preventDefault();  // Stop the form from submitting normally
+            
+            // Get the input values
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorMessage = document.getElementById('error-message');
+    
+            // Validate car registration number format
+            const carNumberRegex = /^[A-Z]{2} \d{2} [A-Z]{2} \d{4}$/;
+    
+            if (!carNumberRegex.test(username)) {
+                errorMessage.textContent = "Car registration number format: GA 01 EE 9669";
+                errorMessage.style.display = 'block';
+                return;  // Stop further execution
+            } 
+    
+            if (password === "") {
+                errorMessage.textContent = "Password cannot be empty";
+                errorMessage.style.display = 'block';
+                return;  // Stop further execution
+            }
+    
+            // Backend API URL (Replace with your actual API endpoint)
+            const apiUrl = `https://your-backend-api.com/api/getUser?username=${username}`;
+    
+            try {
+                // Send GET request to fetch user details
+                const response = await fetch(apiUrl, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+    
+                const data = await response.json();
+    
+                if (response.ok) {
+                    // Check if entered password matches the stored password
+                    if (password === data.password) {
+                        // Save token and redirect
+                        localStorage.setItem("authToken", data.token);
+                        window.location.href = "dashboard.html";
+                    } else {
+                        errorMessage.textContent = "Incorrect password!";
+                        errorMessage.style.display = "block";
+                    }
+                } else {
+                    errorMessage.textContent = data.message || "User not found!";
+                    errorMessage.style.display = "block";
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                errorMessage.textContent = "Server error. Please try again later.";
+                errorMessage.style.display = "block";
+            }
+        });
+    });
+    
+    // Function to redirect to signup page
+    function toggleForm() {
+        window.location.href = 'sign_up.html';
+    }
+    </script>
+</body>
+</html>
