@@ -5,6 +5,6 @@ const userController = require("../Controllers/user_controller.js");
 console.log("User Routes Loaded");
 
 user_router.post("/add-user" , userController.addUser);
-user_router.get("/get-user/:plateNumber" , userController.getUserByPlate);
+user_router.get("/get-user" , userController.getUser);
 
 module.exports = user_router ;
