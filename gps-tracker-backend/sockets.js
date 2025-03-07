@@ -10,9 +10,10 @@ function initializeWebSocket(server) {
 
         // Send a welcome message
         ws.send(JSON.stringify({ message: "Welcome to WebSocket Server" }));
-
+        
         // Handle incoming messages
         ws.on("message", async (message) => {
+            console.log(message.keys());
             try {
                 const {type , data} = JSON.parse(message); // Parse incoming message
                 console.log("📩 Received request:", type);
@@ -26,12 +27,12 @@ function initializeWebSocket(server) {
                     ws.send(JSON.stringify({ type: "lastLocation", lastLocation }));
                 }
                 else if (type === "registerUser") {
-                    const user = await user_controller.addUser(data.userData);
+                    const user = await user_controller.addUser(data);
                     ws.send(JSON.stringify({ type: "userRegistered", user }));
                 }
-                else if (type === "getUserByPlate") {
-                    const user = await user_controller.getUserByPlate(data.plateNumber);
-                    ws.send(JSON.stringify({ type: "userByPlate", user }));
+                else if (type === "getUser") {
+                    const user = await user_controller.getUser(data.plateNumber, data.password);
+                    ws.send(JSON.stringify({ type: "user", user }));
                 }
                 else {
                     ws.send(JSON.stringify({ error: "Invalid request type" }));
