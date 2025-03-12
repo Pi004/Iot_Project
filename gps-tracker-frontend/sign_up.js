@@ -1,5 +1,5 @@
 // ======================== WebSocket Integration ========================
-const socket = new WebSocket("ws://localhost:3000"); 
+const socket = new WebSocket("ws://localhost:3000");
 
 socket.onopen = () => {
     console.log("✅ WebSocket connected");
@@ -217,15 +217,18 @@ function registerUser(event) {
     if (!validateForm(name, phone, secondaryPhone, carNumber, password, confirmPassword)) {
         return false;
     }
-
+    localStorage.setItem("userName", name);
+    setTimeout(() => {
+        window.location.href = "dashboard.html";
+    }, 1000);
     // Send data to WebSocket backend
     const signUpData = {
-        username:name,
-        primaryNumber : phone,
-        secondaryNumber :secondaryPhone,
-        address  : address,
+        username: name,
+        primaryNumber: phone,
+        secondaryNumber: secondaryPhone,
+        address: address,
         plateNumber: carNumber,
-        password : password
+        password: password
     };
 
     // Send sign-up data to WebSocket server
