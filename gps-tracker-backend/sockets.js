@@ -18,19 +18,19 @@ function initializeWebSocket(server) {
                 const {type , data} = JSON.parse(message); // Parse incoming message
                 console.log("📩 Received request:", type);
 
-                if (type === "getLocationHistory") {
+                if (type === "LocationHistory") {
                     const locations = await gps_controller.getLocationHistory(data.plateNumber);
                     ws.send(JSON.stringify({ type: "locationHistory", locations }));
                 } 
-                else if (type === "getLastLocation") {
+                else if (type === "LastLocation") {
                     const lastLocation = await gps_controller.getLastLocation(data.plateNumber);
                     ws.send(JSON.stringify({ type: "lastLocation", lastLocation }));
                 }
-                else if (type === "registerUser") {
+                else if (type === "SignUpUser") {
                     const user = await user_controller.addUser(data);
                     ws.send(JSON.stringify({ type: "userRegistered", user }));
                 }
-                else if (type === "getUser") {
+                else if (type === "LoginUser") {
                     const user = await user_controller.getUser(data.plateNumber, data.password);
                     ws.send(JSON.stringify({ type: "user", user }));
                 }
