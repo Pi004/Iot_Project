@@ -217,10 +217,6 @@ function registerUser(event) {
     if (!validateForm(name, phone, secondaryPhone, carNumber, password, confirmPassword)) {
         return false;
     }
-    localStorage.setItem("userName", name);
-    setTimeout(() => {
-        window.location.href = "dashboard.html";
-    }, 1000);
     // Send data to WebSocket backend
     const signUpData = {
         username: name,
@@ -230,7 +226,7 @@ function registerUser(event) {
         plateNumber: carNumber,
         password: password
     };
-
+    localStorage.setItem("userData" , JSON.stringify(signUpData));
     // Send sign-up data to WebSocket server
     socket.send(JSON.stringify({ type: "SignUpUser", data: signUpData }));
 }
