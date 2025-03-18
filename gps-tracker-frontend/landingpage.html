@@ -48,13 +48,13 @@
         </div>
 
         <div class="login-container">
-            <form class="login-form" >
+            <form class="login-form" onsubmit="return loginUser(event)" >
                 <h2>Login</h2>
                 <div id="loginForm">
-                    <input type="text" id="username" placeholder="Car Registration Number (KA 01 MX 1234)" required>
+                    <input type="text" id="carNumber" placeholder="Car Registration Number (KA 01 X 1234)" required>
                     <input type="password" id="password" placeholder="Password" required>
-                    <button type="submit">Login <i class="fas fa-arrow-right"></i></button>
-                    <p class="switch-form">Don't have an account? <a href="#" onclick="toggleForm()">Sign Up</a></p>
+                    <button type="submit" >Login <i class="fas fa-arrow-right"></i></button>
+                    <p class="switch-form">Don't have an account? <a href="#" onclick="return toggleForm(event)">Sign Up</a></p>
                 </div>
                 <p id="error-message" class="error"></p>
             </form>
@@ -63,105 +63,6 @@
     <footer class="footer">
         <p>All Rights Reserved @2025</p>
     </footer>
-    <!-- <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelector(".login-form").addEventListener("submit", function (e) {
-                e.preventDefault();  // Stop the form from submitting normally
-                
-                // Get the input values
-                const username = document.getElementById('username').value.trim();
-                const password = document.getElementById('password').value.trim();
-                const errorMessage = document.getElementById('error-message');
-                
-                // Validate car registration number format
-                const carNumberRegex = /^[A-Z]{2} \d{2} [A-Z]{2} \d{4}$/;
-                
-                if (!carNumberRegex.test(username)) {
-                    errorMessage.textContent = "Car registration number format: GA 01 EE 9669 ";
-                    errorMessage.style.display = 'block';
-                    return;  // Stop further execution
-                } 
-                
-                if (password === "") {
-                    errorMessage.textContent = "Password cannot be empty";
-                    errorMessage.style.display = 'block';
-                    return;  // Stop further execution
-                }
-    
-                // If validation passes, redirect to dashboard
-                window.location.href = 'dashboard.html';
-            });
-        });
-        // Function to redirect to signup page
-        function toggleForm() {
-            window.location.href = 'sign_up.html';
-        }
-    </script>         -->
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelector(".login-form").addEventListener("submit", async function (e) {
-            e.preventDefault();  // Stop the form from submitting normally
-            
-            // Get the input values
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const errorMessage = document.getElementById('error-message');
-    
-            // Validate car registration number format
-            const carNumberRegex = /^[A-Z]{2} \d{2} [A-Z]{2} \d{4}$/;
-    
-            if (!carNumberRegex.test(username)) {
-                errorMessage.textContent = "Car registration number format: GA 01 EE 9669";
-                errorMessage.style.display = 'block';
-                return;  // Stop further execution
-            } 
-    
-            if (password === "") {
-                errorMessage.textContent = "Password cannot be empty";
-                errorMessage.style.display = 'block';
-                return;  // Stop further execution
-            }
-    
-            // Backend API URL (Replace with your actual API endpoint)
-            const apiUrl = `https://your-backend-api.com/api/getUser?username=${username}`;
-    
-            try {
-                // Send GET request to fetch user details
-                const response = await fetch(apiUrl, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
-    
-                const data = await response.json();
-    
-                if (response.ok) {
-                    // Check if entered password matches the stored password
-                    if (password === data.password) {
-                        // Save token and redirect
-                        localStorage.setItem("authToken", data.token);
-                        window.location.href = "dashboard.html";
-                    } else {
-                        errorMessage.textContent = "Incorrect password!";
-                        errorMessage.style.display = "block";
-                    }
-                } else {
-                    errorMessage.textContent = data.message || "User not found!";
-                    errorMessage.style.display = "block";
-                }
-            } catch (error) {
-                console.error("Error:", error);
-                errorMessage.textContent = "Server error. Please try again later.";
-                errorMessage.style.display = "block";
-            }
-        });
-    });
-    
-    // Function to redirect to signup page
-    function toggleForm() {
-        window.location.href = 'sign_up.html';
-    }
-    </script>
+    <script src="landingpage.js"></script>
 </body>
 </html>

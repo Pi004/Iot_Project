@@ -10,28 +10,29 @@ function initializeWebSocket(server) {
 
         // Send a welcome message
         ws.send(JSON.stringify({ message: "Welcome to WebSocket Server" }));
-
+        
         // Handle incoming messages
         ws.on("message", async (message) => {
+            console.log(message.keys());
             try {
                 const {type , data} = JSON.parse(message); // Parse incoming message
                 console.log("📩 Received request:", type);
 
-                if (type === "getLocationHistory") {
+                if (type === "LocationHistory") {
                     const locations = await gps_controller.getLocationHistory(data.plateNumber);
                     ws.send(JSON.stringify({ type: "locationHistory", locations }));
                 } 
-                else if (type === "getLastLocation") {
+                else if (type === "LastLocation") {
                     const lastLocation = await gps_controller.getLastLocation(data.plateNumber);
                     ws.send(JSON.stringify({ type: "lastLocation", lastLocation }));
                 }
-                else if (type === "registerUser") {
-                    const user = await user_controller.addUser(data.userData);
+                else if (type === "SignUpUser") {
+                    const user = await user_controller.addUser(data);
                     ws.send(JSON.stringify({ type: "userRegistered", user }));
                 }
-                else if (type === "getUserByPlate") {
-                    const user = await user_controller.getUserByPlate(data.plateNumber);
-                    ws.send(JSON.stringify({ type: "userByPlate", user }));
+                else if (type === "LoginUser") {
+                    const user = await user_controller.getUser(data.plateNumber, data.password);
+                    ws.send(JSON.stringify({ type: "user", user }));
                 }
                 else {
                     ws.send(JSON.stringify({ error: "Invalid request type" }));
