@@ -20,11 +20,15 @@ function initializeWebSocket(server) {
 
                 if (type === "LocationHistory") {
                     const locations = await gps_controller.getLocationHistory(data.plateNumber);
-                    ws.send(JSON.stringify({ type: "locationHistory", locations }));
-                } 
+                    ws.send(JSON.stringify({ type: "locationHistory", getloc : locations }));
+                }
+                /*else if (type === "SendEmergencyAlert") {
+                    const alert = await sms_controller.sendEmergencyAlert(data.primaryNumber, data.secondaryNumber, data.message);
+                    ws.send(JSON.stringify({ type: "emergencyAlertSent", }));
+                }*/
                 else if (type === "LastLocation") {
                     const lastLocation = await gps_controller.getLastLocation(data.plateNumber);
-                    ws.send(JSON.stringify({ type: "lastLocation", lastLocation }));
+                    ws.send(JSON.stringify({ type: "lastLocation", getLast : lastLocation }));
                 }
                 else if (type === "SignUpUser") {
                     const user = await user_controller.addUser(data);
@@ -32,7 +36,7 @@ function initializeWebSocket(server) {
                 }
                 else if (type === "LoginUser") {
                     const user = await user_controller.getUser(data.plateNumber, data.password);
-                    ws.send(JSON.stringify({ type: "user", user }));
+                    ws.send(JSON.stringify({ type: "user", User:user }));
                 }
                 else {
                     ws.send(JSON.stringify({ error: "Invalid request type" }));
