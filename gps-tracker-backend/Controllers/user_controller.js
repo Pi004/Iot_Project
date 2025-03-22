@@ -16,11 +16,11 @@ const UserService = require("../Services/user_services.js");
 */
 const addUser = async(UserData) => {
     try {
-        const { username, primaryNumber, secondaryNumber, address, plateNumber,password } = UserData;
-        if (!username || !primaryNumber || !plateNumber || !address || !password) {
+        const { username, primaryNumber, secondaryNumber, address, plateNumber,password,apn } = UserData;
+        if (!username || !primaryNumber || !plateNumber || !address || !password || !apn) {
             return { success: false, message: "Required fields are missing", data: null };
         }
-        const newUser = await UserService.addUser({ username, primaryNumber, secondaryNumber, address, plateNumber , password });
+        const newUser = await UserService.addUser({ username, primaryNumber, secondaryNumber, address, plateNumber , password , apn});
         return { 
             success: true, 
             message: "User added successfully", 
@@ -34,6 +34,7 @@ const addUser = async(UserData) => {
                 vehicle: {
                     plateNumber: newUser.plateNumber,
                 },
+                apn: newUser.apn,
             } 
         };
     } catch (error) {
@@ -81,6 +82,7 @@ const getUser = async (plateNumber , password) => {
             vehicle: {
             plateNumber: user.plateNumber,
             },
+            apn: user.apn,
         },
         };
     }

@@ -30,9 +30,13 @@ function initializeWebSocket(server) {
                     const lastLocation = await gps_controller.getLastLocation(data.plateNumber);
                     ws.send(JSON.stringify({ type: "lastLocation", getLast : lastLocation }));
                 }
+                else if (type === "GPSUpdate") {
+                    const location = await gps_controller.gpsUpdate(data.plateNumber, data);
+                    ws.send(JSON.stringify({ type: "gpsUpdated", update : location }));
+                }
                 else if (type === "SignUpUser") {
                     const user = await user_controller.addUser(data);
-                    ws.send(JSON.stringify({ type: "userRegistered", user }));
+                    ws.send(JSON.stringify({ type: "userRegistered", User:user }));
                 }
                 else if (type === "LoginUser") {
                     const user = await user_controller.getUser(data.plateNumber, data.password);

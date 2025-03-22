@@ -4,6 +4,15 @@ const saveLocation = async (data) => {
     return location;
 };
 
+const gpsUpdate = async (platenumber, data) => {
+    try {
+        const location = await gps.findOneAndUpdate({platenumber}, data, {new: true});
+        return location;
+    }catch(error){
+        console.log("Error in gpsUpdate", error);
+        return null;
+    }
+}
 const getLastLocation = async (platenumber) => {
     try {
         const gps = await gps.find({platenumber}).sort({timestamp: -1});
@@ -24,4 +33,4 @@ async function getLocationHistory(platenumber, limit = 50) {
     }
 }
 
-module.exports = { saveLocation , getLastLocation, getLocationHistory };
+module.exports = { saveLocation , gpsUpdate, getLastLocation, getLocationHistory };
