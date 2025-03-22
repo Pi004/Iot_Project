@@ -210,6 +210,7 @@ function registerUser(event) {
     const secondaryPhone = document.getElementById("secondaryPhone").value.trim();
     const address = document.getElementById("address").value.trim();
     const carNumber = document.getElementById("carNumber").value.trim();
+    const apn = document.getElementById("apn").value.trim();
     const password = document.getElementById("password").value.trim();
     const confirmPassword = document.getElementById("confirmPassword").value.trim();
 
@@ -224,7 +225,8 @@ function registerUser(event) {
         secondaryNumber: secondaryPhone,
         address: address,
         plateNumber: carNumber,
-        password: password
+        password: password,
+        apn: apn
     };
     localStorage.setItem("userData" , JSON.stringify(signUpData));
     // Send sign-up data to WebSocket server

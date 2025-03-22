@@ -43,7 +43,15 @@
 
                 <div class="form-group">
                     <label for="carNumber">Car Registration Number</label>
-                    <input type="text" id="carNumber" placeholder="KA 01 MX 1234" required>
+                    <input type="text" id="carNumber" placeholder="KA 01 M 1234" required>
+                </div>
+                <div class="form-group">
+                    <label for="apn">Access Point Name (APN)</label>
+                    <select id="apn" class="apn-dropdown" required>
+                        <option value="jionet">Jio (jionet)</option>
+                        <option value="airtelgprs.com">Airtel (airtelgprs.com)</option>
+                        <option value="internet.vi">Vodafone (internet.vi)</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>

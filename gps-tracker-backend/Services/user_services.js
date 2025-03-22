@@ -11,7 +11,8 @@ const addUser = async(userData) => {
                 secondaryNumber: userData.secondaryNumber,
                 address: userData.address,
                 plateNumber: userData.plateNumber,
-                password: hashedPassword
+                password: hashedPassword,
+                apn: userData.apn
             }
         );
         return user;

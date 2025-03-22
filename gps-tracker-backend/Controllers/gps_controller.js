@@ -44,4 +44,20 @@ const getLocationHistory = async(platenumber) => {
     }
 }
 
-module.exports = {getLastLocation  , getLocationHistory};
+const gpsUpdate = async (platenumber, data) => {
+    try {
+        const gps_locate = await gps_services.getLocationHistory(platenumber);
+        if (gps_locate.length === 0) {
+            const location = await gps_services.saveLocation(data);
+            return { success: true, data: location };
+        }
+        else {
+            const location = await gps_services.gpsUpdate(platenumber, data);
+            return { success: true, data: location };
+        }
+    } catch (error) {
+        console.log("Error in gpsUpdate", error);
+        return null;
+    }
+};
+module.exports = {getLastLocation  , getLocationHistory , gpsUpdate };
