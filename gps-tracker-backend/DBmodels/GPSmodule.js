@@ -8,6 +8,7 @@ const GPSSchema = new mongoose.Schema({
     accident: { type: Boolean, default: false },
     drunk: { type: Boolean, default: false },
     sleep: { type: Boolean, default: false },
+    videoStreamUrl: { type: String },  // Store stream URL
     timestamp: { type: Date, default: Date.now }
 });
 

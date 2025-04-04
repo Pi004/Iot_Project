@@ -13,7 +13,7 @@ socket.onmessage = (event) => {
         alert("✅ Registration successful!");
         window.location.href = "dashboard.html";
     } else if (data.error) {
-        showError(data.error);
+        showError(data.error);  
     }
 };
 
@@ -210,7 +210,9 @@ function registerUser(event) {
     const secondaryPhone = document.getElementById("secondaryPhone").value.trim();
     const address = document.getElementById("address").value.trim();
     const carNumber = document.getElementById("carNumber").value.trim();
-    const apn = document.getElementById("apn").value.trim();
+    //const apn = document.getElementById("apn").value.trim();
+    const wifissid = document.getElementById("WifiSSID").value.trim();
+    const wifipassword = document.getElementById("WifiPassword").value.trim();
     const password = document.getElementById("password").value.trim();
     const confirmPassword = document.getElementById("confirmPassword").value.trim();
 
@@ -226,7 +228,8 @@ function registerUser(event) {
         address: address,
         plateNumber: carNumber,
         password: password,
-        apn: apn
+        wifissid: wifissid,
+        wifipassword: wifipassword,
     };
     localStorage.setItem("userData" , JSON.stringify(signUpData));
     // Send sign-up data to WebSocket server
