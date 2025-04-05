@@ -43,7 +43,7 @@ const getLocationHistory = async(platenumber) => {
         return { success: false, message: "Server Error", error };
     }
 }
-
+// POST: GPS Update 
 const gpsUpdate = async (platenumber, data) => {
     try {
         const gps_locate = await gps_services.getLocationHistory(platenumber);

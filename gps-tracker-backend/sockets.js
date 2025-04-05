@@ -1,6 +1,7 @@
 const WebSocket = require("ws");
 const gps_controller = require("./Controllers/gps_controller.js");
 const user_controller = require("./Controllers/user_controller.js");
+const video_controller = require("./Controllers/video_controller.js");
 
 function initializeWebSocket(server) {
     const wss = new WebSocket.Server({ server });
@@ -41,6 +42,14 @@ function initializeWebSocket(server) {
                 else if (type === "LoginUser") {
                     const user = await user_controller.getUser(data.plateNumber, data.password);
                     ws.send(JSON.stringify({ type: "user", User:user }));
+                }
+                else if (type === "FrameUpload") {
+                    const frameUpload = await video_controller.handleFrameUpload(data);
+                    ws.send(JSON.stringify({ type: "frameUploaded", frame : frameUpload }));
+                }
+                else if (type === "ConvertToVideo") {
+                    const video = await video_controller.convertToVideo(data.plateNumber);
+                    ws.send(JSON.stringify({ type: "videoConverted", video : video }));
                 }
                 else {
                     ws.send(JSON.stringify({ error: "Invalid request type" }));
