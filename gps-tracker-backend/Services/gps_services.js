@@ -1,6 +1,15 @@
 const gps = require("../DBmodels/GPSmodule")
 const saveLocation = async (data) => {
-    const location = await gps.create(data);
+    const location = await gps.create(
+        platenumber = data.platenumber,
+        latitude = data.latitude,
+        longitude = data.longitude,
+        speed = data.speed,
+        accident = data.accident,
+        drunk = data.drunk,
+        sleep = data.sleep,
+        videoStreamUrl = data.videoStreamUrl,
+    );
     return location;
 };
 

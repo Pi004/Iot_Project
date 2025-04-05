@@ -255,25 +255,25 @@ input:focus, textarea:focus {
     border-color: var(--error-color);
 }
 /* APN Dropdown */
-.apn-dropdown {
+/*.apn-dropdown {
     width: 100%;
     padding: 8px;
-    background-color:#242424;  /* Black background */
-    color: #fff;             /* White text */
-    border: 1px solid #ccc;
+    background-color:#242424;*/  /* Black background */
+    /*color: #fff;  */           /* White text */
+    /*border: 1px solid #ccc;
     border-radius: 5px;
     outline: none;
 }
+*/
+/*.apn-dropdown option {
+    background-color: #242424;*/ /* Black background for options */
+    /*color: #fff; */           /* White text for options */
+/*}*/
 
-.apn-dropdown option {
-    background-color: #242424; /* Black background for options */
-    color: #fff;            /* White text for options */
-}
-
-.apn-dropdown {
+/*.apn-dropdown {
     font-size: 16px;
     padding: 10px;
-}
+}*/
 /* Add to your existing media queries */
 @media (max-width: 640px) {
     .toggle-password {

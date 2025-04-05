@@ -14,16 +14,16 @@ const UserService = require("../Services/user_services.js");
     }
 };
 */
-const addUser = async(UserData) => {
+const addUser = async (UserData) => {
     try {
-        const { username, primaryNumber, secondaryNumber, address, plateNumber,password,apn } = UserData;
-        if (!username || !primaryNumber || !plateNumber || !address || !password || !apn) {
+        const { username, primaryNumber, secondaryNumber, address, plateNumber, password, wifissid, wifipassword } = UserData;
+        if (!username || !primaryNumber || !plateNumber || !address || !password || !wifissid || !wifipassword) {
             return { success: false, message: "Required fields are missing", data: null };
         }
-        const newUser = await UserService.addUser({ username, primaryNumber, secondaryNumber, address, plateNumber , password , apn});
-        return { 
-            success: true, 
-            message: "User added successfully", 
+        const newUser = await UserService.addUser({ username, primaryNumber, secondaryNumber, address, plateNumber, password, wifissid, wifipassword });
+        return {
+            success: true,
+            message: "User added successfully",
             data: {
                 username: newUser.username,
                 contact: {
@@ -34,8 +34,11 @@ const addUser = async(UserData) => {
                 vehicle: {
                     plateNumber: newUser.plateNumber,
                 },
-                apn: newUser.apn,
-            } 
+                wifi: {
+                    ssid: newUser.wifissid,
+                    password: newUser.wifipassword,
+                }
+            }
         };
     } catch (error) {
         return { success: false, message: error.message, data: null };
@@ -61,35 +64,38 @@ const addUser = async(UserData) => {
     }
 };
 */
-const getUser = async (plateNumber , password) => {
-    try{
-        const user = await UserService.getUserByPlateAndPassword(plateNumber , password);
-  
+const getUser = async (plateNumber, password) => {
+    try {
+        const user = await UserService.getUserByPlateAndPassword(plateNumber, password);
+
         if (!user) {
-        return { success: false, message: "User not found", data: null };
+            return { success: false, message: "User not found", data: null };
         }
-    
+
         return {
-        success: true,
-        message: "User retrieved successfully",
-        data: {
-            username: user.username,
-            contact: {
-            primary: user.primaryNumber,
-            secondary: user.secondaryNumber,
+            success: true,
+            message: "User retrieved successfully",
+            data: {
+                username: user.username,
+                contact: {
+                    primary: user.primaryNumber,
+                    secondary: user.secondaryNumber,
+                },
+                location: user.address,
+                vehicle: {
+                    plateNumber: user.plateNumber,
+                },
+                wifi: {
+                    ssid: user.wifissid,
+                    password: user.wifipassword,
+                }
             },
-            location: user.address,
-            vehicle: {
-            plateNumber: user.plateNumber,
-            },
-            apn: user.apn,
-        },
         };
     }
-    catch(error){
-        console.log("Problem in user_controller.js" , error);
+    catch (error) {
+        console.log("Problem in user_controller.js", error);
         return { success: false, message: error.message, data: null };
     }
-  };  
+};
 
 module.exports = { addUser, getUser };
