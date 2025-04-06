@@ -10,6 +10,7 @@ socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
 
     if (data.type === "userRegistered") {
+        console.log("User registered:", data);
         alert("✅ Registration successful!");
         window.location.href = "dashboard.html";
     } else if (data.error) {

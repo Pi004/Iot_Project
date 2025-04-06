@@ -6,9 +6,8 @@ socket.onopen = () => {
 
     // Fetch user data from local storage
     const userData = JSON.parse(localStorage.getItem("userData"));
-
     // Send request to get the last location
-    socket.send(JSON.stringify({ type: "LastLocation", data: { plateNumber: userData ? userData["plateNumber"] : null } }));
+    socket.send(JSON.stringify({ type: "LastLocation", data: { plateNumber: userData.vehicle.plateNumber} }));
 };
 
 // ======================== Load User Name ========================
@@ -32,24 +31,24 @@ function updateGPS(lat=28.7041, lon=77.1025) {
 // ======================== Handle WebSocket Messages ========================
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
-
+    const loc = data.getLast.data;
     switch (data.type) {
         case "lastLocation":
-            updateGPS(data.getLast.latitude, data.getLast.longitude);
-            if(data.getLast.accident === true) {
+            updateGPS(loc.latitude, loc.longitude);
+            if(loc.accident === true) {
                 updateStatus("accident-status", "Accident Detected", "not-safe");
-                sendEmergencyMessage(data.getLast.latitude, data.getLast.longitude);
+                sendEmergencyMessage(data.getLast.data.latitude, data.getLast.data.longitude);
                 updateStatus("message-status", "Sent", "sent");
             } else {
                 updateStatus("accident-status", "No Accident", "safe");
                 updateStatus("message-status", "Pending", "pending");
             }
-            if(data.getLast.drowsiness === true) {
+            if(loc.sleep === true) {
                 updateStatus("drowsiness-status", "High", "high");
             } else {
                 updateStatus("drowsiness-status", "Normal", "normal");
             }
-            if(data.getLast.alcohol === true) {
+            if(loc.drunk === true) {
                 updateStatus("alcohol-status", "Yes", "yes");
             } else {
                 updateStatus("alcohol-status", "No", "no");
@@ -59,13 +58,8 @@ socket.onmessage = (event) => {
             //updateStatus("alcohol-status", data.getLast.alcohol, data.status.alcohol === true ? "yes" : "no");
             //updateStatus("cloud-video-status", data.getLast.cloud_video, data.getLast.cloud_video === "Saved" ? "saved" : "not-saved");
 
-            updateGPS(data.getLast.latitude, data.getLast.longitude);
+            updateGPS(loc.latitude, loc.longitude);
             break;
-
-        /*case "locationHistory":
-            console.log("📍 Location History:", data.locations);
-            break;
-        */
         case "userRegistered":
             console.log("✅ User Registered:", data.user);
             break;

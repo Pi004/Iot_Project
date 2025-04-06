@@ -13,9 +13,9 @@ const gps_services = require("../Services/gps_services");
         res.status(500).json({ success: false, message: "Server Error", error });
     }
 };*/
-const getLastLocation = async(platenumber) => {
+const getLastLocation = async(plateNumber) => {
     try {
-        const lastLocation = await gps_services.getLastLocation(platenumber);
+        const lastLocation = await gps_services.getLastLocation(plateNumber);
         if (!lastLocation) {
             return { success: false, message: "No data found" };
         }
@@ -35,24 +35,25 @@ const getLastLocation = async(platenumber) => {
         res.status(500).json({ success: false, message: "Server Error", error });
     }
 };*/
-const getLocationHistory = async(platenumber) => {
+const getLocationHistory = async(plateNumber) => {
     try {
-        const locations = await gps_services.getLocationHistory(platenumber);
+        const locations = await gps_services.getLocationHistory(plateNumber);
         return { success: true, data: locations };
     } catch (error) {
         return { success: false, message: "Server Error", error };
     }
 }
 // POST: GPS Update 
-const gpsUpdate = async (platenumber, data) => {
+const gpsUpdate = async (plateNumber, data) => {
     try {
-        const gps_locate = await gps_services.getLocationHistory(platenumber);
+        const gps_locate = await gps_services.getLocationHistory(plateNumber);
+        console.log("gps_locate", gps_locate.length);
         if (gps_locate.length === 0) {
             const location = await gps_services.saveLocation(data);
             return { success: true, data: location };
         }
         else {
-            const location = await gps_services.gpsUpdate(platenumber, data);
+            const location = await gps_services.gpsUpdate(plateNumber, data);
             return { success: true, data: location };
         }
     } catch (error) {
@@ -60,4 +61,24 @@ const gpsUpdate = async (platenumber, data) => {
         return null;
     }
 };
-module.exports = {getLastLocation  , getLocationHistory , gpsUpdate };
+
+// DELETE: Location History
+/*const deleteLocationHistory = async (req, res) => {
+    try {
+        const { platenumber } = req.body;
+        const deletedLocations = await gps_services.deleteLocationHistory(platenumber);
+        res.json({ success: true, data: deletedLocations });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server Error", error });
+    }
+};*/
+
+const deleteLocationHistory = async(platenumber) => {
+    try {
+        const deletedLocations = await gps_services.deleteLocationHistory(platenumber);
+        return { success: true, data: deletedLocations };
+    } catch (error) {
+        return { success: false, message: "Server Error", error };
+    }
+}
+module.exports = {getLastLocation  , getLocationHistory , gpsUpdate , deleteLocationHistory};
