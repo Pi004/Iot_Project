@@ -35,6 +35,10 @@ function initializeWebSocket(server) {
                     const location = await gps_controller.gpsUpdate(data.plateNumber, data);
                     ws.send(JSON.stringify({ type: "gpsUpdated", update : location }));
                 }
+                else if (type === "DeleteLocationHistory") {
+                    const deletedLocations = await gps_controller.deleteLocationHistory(data.plateNumber);
+                    ws.send(JSON.stringify({ type: "locationHistoryDeleted", delete : deletedLocations }));
+                }
                 else if (type === "SignUpUser") {
                     const user = await user_controller.addUser(data);
                     ws.send(JSON.stringify({ type: "userRegistered", User:user }));

@@ -135,6 +135,31 @@ body {
     font-size: clamp(1.25rem, 3vw, 1.625rem);
 }
 
+/*Password Visibility Toggle*/
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+.password-wrapper input {
+    width: 100%;
+    padding: 12px 40px 12px 12px; /* Add space on the right for the eye icon */
+    font-size: 16px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    height: 45px; /* Set a fixed height for consistency */
+  }
+  
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 35%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #888;
+    font-size: 18px;
+    line-height:1;
+    }
 /* Input Fields */
 input {
     width: 100%;
