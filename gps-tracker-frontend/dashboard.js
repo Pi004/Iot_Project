@@ -7,7 +7,7 @@ socket.onopen = () => {
     // Fetch user data from local storage
     const userData = JSON.parse(localStorage.getItem("userData"));
     // Send request to get the last location
-    socket.send(JSON.stringify({ type: "LastLocation", data: { plateNumber: userData.vehicle.plateNumber} }));
+    socket.send(JSON.stringify({ type: "LiveLocation", data: { plateNumber: userData.vehicle.plateNumber} }));
 };
 
 // ======================== Load User Name ========================
@@ -24,17 +24,40 @@ function updateStatus(elementId, text, statusClass) {
 }
 
 // ======================== Update GPS Location ========================
-function updateGPS(lat=28.7041, lon=77.1025) {
+/*function updateGPS(lat=28.7041, lon=77.1025) {
     document.getElementById("gps-frame").src = `https://maps.google.com/maps?q=${lat},${lon}&output=embed`;
+}*/
+let map, marker;
+function initializeMap(lat = 28.7041, lon = 77.1025) {
+    map = L.map("gps-map").setView([lat, lon], 15);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    marker = L.marker([lat, lon]).addTo(map);
 }
 
+function updateGPS(lat, lon, speed = 0) {
+    if (!map) {
+        initializeMap(lat, lon);
+    } else {
+        marker.setLatLng([lat, lon]);
+        map.setView([lat, lon], 15);
+    }
+
+    // Update display panel
+    document.getElementById("lat-display").innerText = `Lat: ${lat.toFixed(5)}`;
+    document.getElementById("lon-display").innerText = `Lon: ${lon.toFixed(5)}`;
+    document.getElementById("speed-display").innerText = `Speed: ${speed.toFixed(1)} km/h`;
+}
 // ======================== Handle WebSocket Messages ========================
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
-    const loc = data.getLast.data;
+    const loc = data.getLive.data;
     switch (data.type) {
-        case "lastLocation":
-            updateGPS(loc.latitude, loc.longitude);
+        case "liveLocation":
+            updateGPS(loc.latitude, loc.longitude , loc.speed || 0);
             if(loc.accident === true) {
                 updateStatus("accident-status", "Accident Detected", "not-safe");
                 sendEmergencyMessage(data.getLast.data.latitude, data.getLast.data.longitude);
@@ -58,7 +81,7 @@ socket.onmessage = (event) => {
             //updateStatus("alcohol-status", data.getLast.alcohol, data.status.alcohol === true ? "yes" : "no");
             //updateStatus("cloud-video-status", data.getLast.cloud_video, data.getLast.cloud_video === "Saved" ? "saved" : "not-saved");
 
-            updateGPS(loc.latitude, loc.longitude);
+            updateGPS(loc.latitude, loc.longitude , loc.speed || 0);
             break;
         case "userRegistered":
             console.log("✅ User Registered:", data.user);

@@ -25,12 +25,12 @@ const gpsUpdate = async (plateNumber, data) => {
         return null;
     }
 }
-const getLastLocation = async (plateNumber) => {
+const getLiveLocation = async (plateNumber) => {
     try {
         const location = await gps.find({plateNumber}).sort({timestamp: -1}).limit(1);
         return location[0];   
     } catch (error) {
-        console.log("Error in getLastLocation", error);
+        console.log("Error in getLiveLocation", error);
         return null;
     }
 };
@@ -54,4 +54,4 @@ async function deleteLocationHistory(plateNumber) {
     }
 }
 
-module.exports = { saveLocation , gpsUpdate, getLastLocation, getLocationHistory , deleteLocationHistory};
+module.exports = { saveLocation , gpsUpdate, getLiveLocation, getLocationHistory , deleteLocationHistory};
