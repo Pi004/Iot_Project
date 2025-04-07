@@ -6,6 +6,8 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href="dashboard.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
     <header class="dashboard-header">
@@ -36,12 +38,18 @@
         <!-- GPS Tracking Section (Right Side) -->
         <div class="gps-container">
             <h2>Live GPS Tracking</h2>
-            <iframe 
+            <!--<iframe 
                 id="gps-frame" 
                 class="gps-frame"
                 src="https://maps.google.com/maps?q=28.7041,77.1025&output=embed" 
                 allowfullscreen>
-            </iframe>
+            </iframe>-->
+            <div id="coords-display" class="coords-display">
+                <div id="lat-display">Lat: --</div>
+                <div id="lon-display">Lon: --</div>
+                <div id="speed-display">Speed: -- km/h</div>
+            </div>
+            <div id="gps-map" class="gps-frame"></div>
         </div>
     </div>
     <script src = "dashboard.js"></script>

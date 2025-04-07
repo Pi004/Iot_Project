@@ -1,5 +1,4 @@
 const gps_services = require("../Services/gps_services");
-
 // GET: Last Known Location
 /*const getLastLocation = async (req, res) => {
     try {
@@ -13,13 +12,13 @@ const gps_services = require("../Services/gps_services");
         res.status(500).json({ success: false, message: "Server Error", error });
     }
 };*/
-const getLastLocation = async(plateNumber) => {
+const getLiveLocation = async(plateNumber) => {
     try {
-        const lastLocation = await gps_services.getLastLocation(plateNumber);
-        if (!lastLocation) {
+        const liveLocation = await gps_services.getLiveLocation(plateNumber);
+        if (!liveLocation) {
             return { success: false, message: "No data found" };
         }
-        return { success: true, data: lastLocation };
+        return { success: true, data: liveLocation };
     } catch (error) {
         return { success: false, message: "Server Error", error };
     }
@@ -81,4 +80,4 @@ const deleteLocationHistory = async(platenumber) => {
         return { success: false, message: "Server Error", error };
     }
 }
-module.exports = {getLastLocation  , getLocationHistory , gpsUpdate , deleteLocationHistory};
+module.exports = {getLiveLocation  , getLocationHistory , gpsUpdate , deleteLocationHistory};

@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const http = require("http");
-const initializeWebSocket = require("./sockets.js");
+const {initializeWebSocket} = require("./sockets.js");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
