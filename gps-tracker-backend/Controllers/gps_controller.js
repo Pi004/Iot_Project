@@ -47,14 +47,18 @@ const gpsUpdate = async (plateNumber, data) => {
     try {
         const gps_locate = await gps_services.getLocationHistory(plateNumber);
         console.log("gps_locate", gps_locate.length);
-        if (gps_locate.length === 0) {
+        /*if (gps_locate.length === 0) {
+            // If no location history, save the new location
             const location = await gps_services.saveLocation(data);
             return { success: true, data: location };
         }
-        else {
+        else if (gps_locate.length > 0) {
+            // If location history exists, update the existing location
             const location = await gps_services.gpsUpdate(plateNumber, data);
             return { success: true, data: location };
-        }
+        }*/
+        const location = await gps_services.gpsUpdate(plateNumber, data);
+        return { success: true, data: location };
     } catch (error) {
         console.log("Error in gpsUpdate", error);
         return null;

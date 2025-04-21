@@ -212,8 +212,8 @@ function registerUser(event) {
     const address = document.getElementById("address").value.trim();
     const carNumber = document.getElementById("carNumber").value.trim();
     //const apn = document.getElementById("apn").value.trim();
-    const wifissid = document.getElementById("WifiSSID").value.trim();
-    const wifipassword = document.getElementById("WifiPassword").value.trim();
+    //const wifissid = document.getElementById("WifiSSID").value.trim();
+    //const wifipassword = document.getElementById("WifiPassword").value.trim();
     const password = document.getElementById("password").value.trim();
     const confirmPassword = document.getElementById("confirmPassword").value.trim();
 
@@ -229,10 +229,18 @@ function registerUser(event) {
         address: address,
         plateNumber: carNumber,
         password: password,
-        wifissid: wifissid,
-        wifipassword: wifipassword,
+        //wifissid: wifissid,
+        //wifipassword: wifipassword,
     };
-    localStorage.setItem("userData" , JSON.stringify(signUpData));
+    localStorage.setItem("userData", JSON.stringify({
+        username: name,
+        primaryNumber: phone,
+        secondaryNumber: secondaryPhone,
+        address: address,
+        vehicle: {
+            plateNumber: carNumber
+        }
+    }));
     // Send sign-up data to WebSocket server
     socket.send(JSON.stringify({ type: "SignUpUser", data: signUpData }));
 }

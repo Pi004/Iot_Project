@@ -1,4 +1,5 @@
 const WebSocket = require("ws");
+const { spawn } = require('child_process');
 const gps_controller = require("./Controllers/gps_controller.js");
 const user_controller = require("./Controllers/user_controller.js");
 const video_controller = require("./Controllers/video_controller.js");
@@ -21,7 +22,11 @@ function initializeWebSocket(server) {
             try {
                 const {type , data} = JSON.parse(message); // Parse incoming message
                 console.log("📩 Received request:", type);
-
+                // Handle Python processing
+                if (type === "ProcessFramePython") {
+                    processWithPython(data);
+                    return;
+                }
                 if (type === "LocationHistory") {
                     const locations = await gps_controller.getLocationHistory(data.plateNumber);
                     ws.send(JSON.stringify({ type: "locationHistory", getloc : locations }));
@@ -45,6 +50,7 @@ function initializeWebSocket(server) {
                 }
                 else if (type === "GPSUpdate") {
                     const location = await gps_controller.gpsUpdate(data.plateNumber, data);
+                    console.log("Location" , location);
                     if (location && location.success) {
                         broadcastNewLocation(location.data); // Broadcast the new location to all clients
                     }
@@ -132,4 +138,19 @@ function broadcastNewLocation(location) {
         }
     });
 }
-module.exports = {initializeWebSocket , broadcastNewLocation , broadcastMessages};
+// Spawn Python process for each frame
+function processWithPython(data) {
+    const py = spawn("python3", ["process_frame.py"]);
+
+    py.stdin.write(data);
+    py.stdin.end();
+
+    py.stdout.on("data", (output) => {
+        console.log("🐍 Python output:", output.toString().trim());
+    });
+
+    py.stderr.on("data", (err) => {
+        console.error("🐍 Python error:", err.toString());
+    });
+}
+module.exports = {initializeWebSocket , broadcastNewLocation , broadcastMessages , processWithPython};

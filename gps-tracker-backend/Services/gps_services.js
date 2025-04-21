@@ -18,13 +18,29 @@ const saveLocation = async (data) => {
 
 const gpsUpdate = async (plateNumber, data) => {
     try {
-        const location = await gps.findOneAndUpdate({plateNumber}, data, {new: true});
+        const location = await gps.findOneAndUpdate(
+            { plateNumber: plateNumber },
+            {
+                $set: {
+                    latitude: data.latitude,
+                    longitude: data.longitude,
+                    speed : data.speed,
+                    timestamp: Date.now()
+                }
+            },
+            {
+                new: true,
+                upsert: true,
+                runValidators: true
+            }
+        );
         return location;
-    }catch(error){
+    } catch (error) {
         console.log("Error in gpsUpdate", error);
         return null;
     }
-}
+};
+
 const getLiveLocation = async (plateNumber) => {
     try {
         const location = await gps.find({plateNumber}).sort({timestamp: -1}).limit(1);

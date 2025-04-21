@@ -1,4 +1,5 @@
 const videoService = require("../Services/video_services");
+const { rgb565ToRGB888, saveAsPNG } = require("../Services/helper.js");
 const path = require("path");
 /**
  * Handles WebSocket video frame uploads from ESP32-CAM.
@@ -6,17 +7,23 @@ const path = require("path");
 const handleFrameUpload = async (data) => {
     try {
         console.log("Incoming Frame Upload Request");
-        console.log("Plate Number:", data.plateNumber);
-
-        if (!data.plateNumber || !data.frame) {
-            //ws.send(JSON.stringify({ error: "Missing plateNumber or frame data" }));
+        const { frame, format, width, height, plateNumber } = data;
+        if (!plateNumber || !frame) {
             return { success: false, message: "Missing plateNumber or frame data" }; 
         }
+        const frameBuffer = Buffer.from(frame, "base64");
+        if (format === "RGB565" && width && height) {
+            const canvas = rgb565ToRGB888(buffer, width, height);
+            const fileName = `frame_${plateNumber}_${Date.now()}.png`;
+            const localPath = await saveAsPNG(canvas, fileName);
 
-        //const base64Data = data.frame.replace(/^data:image\/\w+;base64,/, "");
-        const frameBuffer = Buffer.from(data.frame, "base64");
-        const frameUrl = await videoService.saveFrame(frameBuffer, data.plateNumber);
-        return { status: "Frame saved", url : frameUrl };
+            const frameUrl = await videoService.saveFrame(fs.readFileSync(localPath), plateNumber);
+            return { status: "Frame saved", url: frameUrl };
+        } else {
+            // fallback for already encoded images
+            const frameUrl = await videoService.saveFrame(buffer, plateNumber);
+            return { status: "Frame saved", url: frameUrl };
+        }
     } catch (error) {
         console.error("Frame Upload Error:", error);
         return { error: "Failed to save frame" };
