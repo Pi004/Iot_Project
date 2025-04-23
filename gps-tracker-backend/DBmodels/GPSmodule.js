@@ -7,7 +7,7 @@ const GPSSchema = new mongoose.Schema({
     speed: { type: Number, default: 0 },
     accident: { type: Boolean, default: false },
     drunk: { type: Boolean, default: false },
-    sleep: { type: Boolean, default: false },
+    sleep: { type: String, default: "Awake" },
     //videoStreamUrl: { type: String },  // Store stream URL
     timestamp: { type: Date, default: Date.now }
 });

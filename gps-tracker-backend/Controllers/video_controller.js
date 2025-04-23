@@ -1,5 +1,4 @@
 const videoService = require("../Services/video_services");
-const { rgb565ToRGB888, saveAsPNG } = require("../Services/helper.js");
 const path = require("path");
 /**
  * Handles WebSocket video frame uploads from ESP32-CAM.
@@ -7,23 +6,16 @@ const path = require("path");
 const handleFrameUpload = async (data) => {
     try {
         console.log("Incoming Frame Upload Request");
-        const { frame, format, width, height, plateNumber } = data;
+        const { frame , plateNumber } = data;
         if (!plateNumber || !frame) {
             return { success: false, message: "Missing plateNumber or frame data" }; 
         }
-        const frameBuffer = Buffer.from(frame, "base64");
-        if (format === "RGB565" && width && height) {
-            const canvas = rgb565ToRGB888(buffer, width, height);
-            const fileName = `frame_${plateNumber}_${Date.now()}.png`;
-            const localPath = await saveAsPNG(canvas, fileName);
+        const base64Data = frame.replace(/^data:image\/\w+;base64,/, "");
+        const buffer = Buffer.from(base64Data, "base64");
 
-            const frameUrl = await videoService.saveFrame(fs.readFileSync(localPath), plateNumber);
-            return { status: "Frame saved", url: frameUrl };
-        } else {
-            // fallback for already encoded images
-            const frameUrl = await videoService.saveFrame(buffer, plateNumber);
-            return { status: "Frame saved", url: frameUrl };
-        }
+        const frameUrl = await videoService.saveFrame(buffer, plateNumber);
+        //const frameUrl = await videoService.saveFrame(frame, plateNumber);
+        return { status: "Frame saved", url: frameUrl };
     } catch (error) {
         console.error("Frame Upload Error:", error);
         return { error: "Failed to save frame" };
@@ -66,5 +58,29 @@ const handleVideoUpload = async (data) => {
         return { success: false, message: "Video upload failed", error };
     }
 };
+/**
+ * Handles incoming live stream URLs from clients (e.g., ESP32-CAM).
+ * Stores or processes the live stream link associated with a plateNumber.
+ */
+const handleLiveStream = async (streamUrl , plateNumber) => {
+    try {
+        if (!streamUrl || !plateNumber) {
+            console.warn("Missing streamUrl or plateNumber");
+            return { success: false, message: "Missing streamUrl or plateNumber" };
+        }
 
-module.exports = { handleFrameUpload, convertToVideo  , handleVideoUpload};
+        // Optional: save to a DB or in-memory store
+        await videoService.recordStreamAndUpload(streamUrl, plateNumber);
+
+        // You can also broadcast it to frontend clients if needed
+        // io.emit("new_live_stream", { plateNumber, streamUrl });
+
+        console.log(`Received live stream from ${plateNumber}: ${streamUrl}`);
+        return { success: true, message: "Live stream URL registered", streamUrl };
+    } catch (error) {
+        console.error("Live Stream URL Error:", error);
+        return { success: false, message: "Failed to handle live stream URL", error };
+    }
+};
+
+module.exports = { handleFrameUpload, convertToVideo  , handleVideoUpload , handleLiveStream};

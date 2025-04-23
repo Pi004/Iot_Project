@@ -60,14 +60,15 @@ socket.onmessage = (event) => {
             updateGPS(loc.latitude, loc.longitude , loc.speed || 0);
             if(loc.accident === true) {
                 updateStatus("accident-status", "Accident Detected", "not-safe");
-                sendEmergencyMessage(data.getLast.data.latitude, data.getLast.data.longitude);
+                sendEmergencyMessage(loc.latitude, loc.longitude);
                 updateStatus("message-status", "Sent", "sent");
             } else {
                 updateStatus("accident-status", "No Accident", "safe");
                 updateStatus("message-status", "Pending", "pending");
             }
-            if(loc.sleep === true) {
+            if(loc.sleep !== "Awake") {
                 updateStatus("drowsiness-status", "High", "high");
+
             } else {
                 updateStatus("drowsiness-status", "Normal", "normal");
             }
@@ -83,6 +84,7 @@ socket.onmessage = (event) => {
 
             updateGPS(loc.latitude, loc.longitude , loc.speed || 0);
             break;
+        case "drowsinessAlert":
         case "userRegistered":
             console.log("✅ User Registered:", data.user);
             break;
@@ -103,8 +105,8 @@ function sendEmergencyMessage(lat, lon) {
     socket.send(JSON.stringify({ 
         type: "SendEmergencyAlert", 
         data: { 
-            primaryNumber : JSON.parse(localStorage.getItem("userData"))["primaryNumber"],
-            secondaryNumber : JSON.parse(localStorage.getItem("userData"))["secondaryNumber"],
+            primaryNumber :"+91" + JSON.parse(localStorage.getItem("userData"))["contact"]["primary"],
+            secondaryNumber :"+91" +JSON.parse(localStorage.getItem("userData"))["contact"]["secondary"],
             message: message
          }
     }));
