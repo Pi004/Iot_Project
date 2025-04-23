@@ -1,7 +1,9 @@
 const WebSocket = require("ws");
+const { spawn } = require('child_process');
 const gps_controller = require("./Controllers/gps_controller.js");
 const user_controller = require("./Controllers/user_controller.js");
 const video_controller = require("./Controllers/video_controller.js");
+const sms_controller = require("./Controllers/sms_controller.js");
 
 let wss;
 
@@ -20,7 +22,11 @@ function initializeWebSocket(server) {
             try {
                 const {type , data} = JSON.parse(message); // Parse incoming message
                 console.log("📩 Received request:", type);
-
+                // Handle Python processing
+                if (type === "ProcessFramePython") {
+                    processWithPython(data);
+                    return;
+                }
                 if (type === "LocationHistory") {
                     const locations = await gps_controller.getLocationHistory(data.plateNumber);
                     ws.send(JSON.stringify({ type: "locationHistory", getloc : locations }));
@@ -44,6 +50,7 @@ function initializeWebSocket(server) {
                 }
                 else if (type === "GPSUpdate") {
                     const location = await gps_controller.gpsUpdate(data.plateNumber, data);
+                    console.log("Location" , location);
                     if (location && location.success) {
                         broadcastNewLocation(location.data); // Broadcast the new location to all clients
                     }
@@ -64,6 +71,12 @@ function initializeWebSocket(server) {
                 else if (type === "FrameUpload") {
                     const frameUpload = await video_controller.handleFrameUpload(data);
                     ws.send(JSON.stringify({ type: "frameUploaded", frame : frameUpload }));
+
+                    broadcastMessages(frameUpload.url);
+                }
+                else if(type === "VideoUpload"){
+                    const videoUpload = await video_controller.handleVideoUpload(data);
+                    ws.send(JSON.stringify({ type: "videoUploaded", video : videoUpload }));
                 }
                 else if (type === "ConvertToVideo") {
                     const video = await video_controller.convertToVideo(data.plateNumber);
@@ -90,7 +103,23 @@ function initializeWebSocket(server) {
     });
     console.log("🟢 WebSocket server initialized");
 }
+function broadcastMessages(frameUrl) {
+    const message = {
+        type: "frameUploaded",
+        frame: {
+            status: "Frame saved",
+            url : frameUrl
+        }
+    };
 
+    const payload = JSON.stringify(message);
+    wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(payload);
+            console.log("📡 Sent frame to connected client");
+        }
+    });
+}
 function broadcastNewLocation(location) {
     const message = {
         type: "liveLocation",
@@ -109,4 +138,19 @@ function broadcastNewLocation(location) {
         }
     });
 }
-module.exports = {initializeWebSocket , broadcastNewLocation};
+// Spawn Python process for each frame
+function processWithPython(data) {
+    const py = spawn("python3", ["process_frame.py"]);
+
+    py.stdin.write(data);
+    py.stdin.end();
+
+    py.stdout.on("data", (output) => {
+        console.log("🐍 Python output:", output.toString().trim());
+    });
+
+    py.stderr.on("data", (err) => {
+        console.error("🐍 Python error:", err.toString());
+    });
+}
+module.exports = {initializeWebSocket , broadcastNewLocation , broadcastMessages , processWithPython};

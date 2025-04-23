@@ -62,5 +62,24 @@ async function convertToVideo(plateNumber) {
             .run();
     });
 }
+/**
+ * Uploads a video to Cloudinary under a plate-specific folder.
+ * @param {string} filePath - The path to the local video file
+ * @param {string} plateNumber - The vehicle plate number
+ * @returns {Promise<string>} - Cloudinary URL of uploaded video
+ */
+async function uploadVideo(filePath, plateNumber) {
+    try {
+        const result = await cloudinary.uploader.upload(filePath, {
+            resource_type: "video",
+            folder: `esp32_cam_videos/${plateNumber}`,
+        });
 
-module.exports = { saveFrame, convertToVideo };
+        console.log(`✅ Video uploaded for ${plateNumber}: ${result.secure_url}`);
+        return result.secure_url;
+    } catch (err) {
+        console.error("❌ Cloudinary Video Upload Error:", err);
+        throw err;
+    }
+}
+module.exports = { saveFrame, convertToVideo , uploadVideo};

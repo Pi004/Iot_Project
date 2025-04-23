@@ -7,7 +7,7 @@ socket.onopen = () => {
     // Fetch user data from local storage
     const userData = JSON.parse(localStorage.getItem("userData"));
     // Send request to get the last location
-    socket.send(JSON.stringify({ type: "LiveLocation", data: { plateNumber: userData.vehicle.plateNumber} }));
+    socket.send(JSON.stringify({ type: "LiveLocation", data: { plateNumber: userData.vehicle["plateNumber"]} }));
 };
 
 // ======================== Load User Name ========================

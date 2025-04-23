@@ -13,8 +13,6 @@ const addUser = async(userData) => {
                 address: userData.address,
                 plateNumber: userData.plateNumber,
                 password: hashedPassword,
-                wifissid: userData.wifissid,
-                wifipassword: hashedWifipassword,
             }
         );
         return user;
