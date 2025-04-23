@@ -25,6 +25,8 @@ const gpsUpdate = async (plateNumber, data) => {
                     latitude: data.latitude,
                     longitude: data.longitude,
                     speed : data.speed,
+                    accident: data.accident,
+                    drunk: data.drunk,
                     timestamp: Date.now()
                 }
             },
@@ -40,7 +42,28 @@ const gpsUpdate = async (plateNumber, data) => {
         return null;
     }
 };
-
+const SleepUpdate = async (plateNumber, Sleepstatus) => {
+    try {
+        const location = await gps.findOneAndUpdate(
+            { plateNumber: plateNumber },
+            {
+                $set: {
+                    sleep : Sleepstatus,
+                    timestamp: Date.now()
+                }
+            },
+            {
+                new: true,
+                upsert: true,
+                runValidators: true
+            }
+        );
+        return location;
+    } catch (error) {
+        console.log("Error in gpsUpdate", error);
+        return null;
+    }
+};
 const getLiveLocation = async (plateNumber) => {
     try {
         const location = await gps.find({plateNumber}).sort({timestamp: -1}).limit(1);
@@ -70,4 +93,4 @@ async function deleteLocationHistory(plateNumber) {
     }
 }
 
-module.exports = { saveLocation , gpsUpdate, getLiveLocation, getLocationHistory , deleteLocationHistory};
+module.exports = { saveLocation , gpsUpdate, getLiveLocation, getLocationHistory , deleteLocationHistory , SleepUpdate};

@@ -64,7 +64,15 @@ const gpsUpdate = async (plateNumber, data) => {
         return null;
     }
 };
-
+const SleepUpdate = async(data) => {
+    try{
+        const status = await gps_services.SleepUpdate(data.plateNumber , data.sleep);
+        return { success: true, data: status };
+    }catch (error) {
+        console.log("Error in gpsUpdate", error);
+        return null;
+    }
+}
 // DELETE: Location History
 /*const deleteLocationHistory = async (req, res) => {
     try {
@@ -84,4 +92,4 @@ const deleteLocationHistory = async(platenumber) => {
         return { success: false, message: "Server Error", error };
     }
 }
-module.exports = {getLiveLocation  , getLocationHistory , gpsUpdate , deleteLocationHistory};
+module.exports = {getLiveLocation  , getLocationHistory , gpsUpdate , deleteLocationHistory , SleepUpdate };

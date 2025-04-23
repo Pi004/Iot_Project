@@ -1,8 +1,12 @@
 const cloudinary = require("../Config/cloudinary.js");
-const ffmpeg = require("fluent-ffmpeg");
+//const ffmpeg = require("fluent-ffmpeg");
+//const { spawn } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 
+const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg'); // 👈 Add this
+const ffmpeg = require("fluent-ffmpeg");
+ffmpeg.setFfmpegPath(ffmpegInstaller.path); // 👈 And this
 /**
  * Uploads a single frame to Cloudinary under the specified plate number.
  * @param {Buffer} data - The image frame data (Base64 decoded)
@@ -82,4 +86,50 @@ async function uploadVideo(filePath, plateNumber) {
         throw err;
     }
 }
-module.exports = { saveFrame, convertToVideo , uploadVideo};
+const recordStreamAndUpload = (streamUrl, plateNumber, duration = 30) => {
+    return new Promise((resolve, reject) => {
+        const fileName = `${plateNumber}-${Date.now()}.mp4`;
+        const outputPath = path.join(__dirname, "../temp", fileName);
+
+        console.log(`Recording stream from ${streamUrl}...`);
+
+        // FFmpeg pipeline
+        ffmpeg(streamUrl)
+            .inputOptions('-re') // read input at native frame rate
+            .duration(duration)
+            .videoCodec('libx264') // better compatibility than 'copy'
+            .format('mp4')
+            .noAudio()
+            .on("start", (cmd) => {
+                console.log("🔧 FFmpeg started:", cmd);
+            })
+            .on("end", () => {
+                console.log("✅ Recording complete. Uploading to Cloudinary...");
+
+                cloudinary.uploader.upload(outputPath, {
+                    resource_type: "video",
+                    folder: `vehicle-streams/${plateNumber}`,
+                }, (err, result) => {
+                    fs.unlink(outputPath, () => {}); // cleanup
+
+                    if (err) {
+                        console.error("❌ Cloudinary upload failed:", err);
+                        return reject({ success: false, message: "Upload failed", error: err });
+                    }
+
+                    console.log("☁️ Upload complete:", result.secure_url);
+                    resolve({ success: true, cloudinaryUrl: result.secure_url });
+                });
+            })
+            .on("error", (err, stdout, stderr) => {
+                console.error("🔥 FFmpeg error:", err.message || err);
+                reject({
+                    success: false,
+                    message: "FFmpeg failed to record stream. Check if the URL is valid and accessible.",
+                    error: err
+                });
+            })
+            .save(outputPath);
+    });
+};
+module.exports = { saveFrame, convertToVideo , uploadVideo , recordStreamAndUpload};
