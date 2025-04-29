@@ -13,45 +13,58 @@
     <header class="dashboard-header">
         <h2>Welcome, <span id="user-name">User</span></h2>
     </header>
-
-    <div class="dashboard-container">
-        <!-- Status Section (Left Side) -->
-        <div class="status-section">
-            <h2>Status Overview</h2>
-            <div class="status-card">
-                <span>Accident Status:</span> <span id="accident-status" class="status safe">Safe</span>
-            </div>
-            <div class="status-card">
-                <span>Drowsiness Status:</span> <span id="drowsiness-status" class="status normal">Normal</span>
-            </div>
-            <div class="status-card">
-                <span>Alcohol Status:</span> <span id="alcohol-status" class="status no">No</span>
-            </div>
-            <div class="status-card">
-                <span>Cloud Video:</span> <span id="cloud-video-status" class="status not-saved">Not Saved</span>
-            </div>
-            <div class="status-card">
-                <span>Message Status:</span> <span id="message-status" class="status pending">Pending</span>
-            </div>
-        </div>
-
-        <!-- GPS Tracking Section (Right Side) -->
-        <div class="gps-container">
-            <h2>Live GPS Tracking</h2>
-            <!--<iframe 
-                id="gps-frame" 
-                class="gps-frame"
-                src="https://maps.google.com/maps?q=28.7041,77.1025&output=embed" 
-                allowfullscreen>
-            </iframe>-->
-            <div id="coords-display" class="coords-display">
-                <div id="lat-display">Lat: --</div>
-                <div id="lon-display">Lon: --</div>
-                <div id="speed-display">Speed: -- km/h</div>
-            </div>
-            <div id="gps-map" class="gps-frame"></div>
-        </div>
+    <div class="tab-buttons">
+        <button class="tab-btn active" data-tab="status-tab">Status</button>
+        <button class="tab-btn" data-tab="video-tab">Video</button>
     </div>
-    <script src = "dashboard.js"></script>
+    <div class="dashboard-container">
+    <!-- Status Section (Left Side)-->
+        <div id="status-tab" class="tab-content active"> 
+            <div class="dashboard">     
+                <div class="status-section">
+                    <h2>Status Overview</h2>
+                    <div class="status-card">
+                        <span>Accident Status:</span> <span id="accident-status" class="status safe">Safe</span>
+                    </div>
+                    <div class="status-card">
+                        <span>Drowsiness Status:</span> <span id="drowsiness-status" class="status normal">Normal</span>
+                    </div>
+                    <div class="status-card">
+                        <span>Alcohol Status:</span> <span id="alcohol-status" class="status no">No</span>
+                    </div>
+                    <div class="status-card">
+                        <span>Cloud Video:</span> <span id="cloud-video-status" class="status not-saved">Not Saved</span>
+                    </div>
+                    <div class="status-card">
+                        <span>Message Status:</span> <span id="message-status" class="status pending">Pending</span>
+                    </div>
+                </div>
+
+                <!--GPS Tracking Section (Right Side-->
+                <div class="gps-container">
+                    <h2>Live GPS Tracking</h2>
+                    <div id="coords-display" class="coords-display">
+                        <div id="lat-display">Lat: --</div>
+                        <div id="lon-display">Lon: --</div>
+                        <div id="speed-display">Speed: -- km/h</div>
+                    </div>
+                    <div id="gps-map" class="gps-frame"></div>
+                </div>
+            </div>
+        </div>
+        <div id="video-tab" class="tab-content">
+            <div class="video-section">
+                <h2 class="video-heading">Live Camera Feed</h2>
+                <div class="video-wrapper">
+                    <img id="live-video" class="video-frame" src="http://ESP_IP:PORT/stream"
+                         alt="Live Stream" onerror="showCameraOff()" onload="hideCameraOff()" />
+                    <div id="camera-off-overlay" class="camera-off hidden">
+                        <span>Camera Off</span>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </div>
+    <script src="dashboard.js"></script>
 </body>
 </html>
