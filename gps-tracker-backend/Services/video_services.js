@@ -1,12 +1,9 @@
 const cloudinary = require("../Config/cloudinary.js");
-//const ffmpeg = require("fluent-ffmpeg");
+const ffmpeg = require("fluent-ffmpeg");
+ffmpeg.setFfmpegPath('C:/ffmpeg-7.0.2-full_build/bin/ffmpeg.exe'); // Replace with your real path
 //const { spawn } = require("child_process");
 const path = require("path");
 const fs = require("fs");
-
-const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg'); // 👈 Add this
-const ffmpeg = require("fluent-ffmpeg");
-ffmpeg.setFfmpegPath(ffmpegInstaller.path); // 👈 And this
 /**
  * Uploads a single frame to Cloudinary under the specified plate number.
  * @param {Buffer} data - The image frame data (Base64 decoded)

@@ -70,7 +70,7 @@ const handleLiveStream = async (streamUrl , plateNumber) => {
         }
 
         // Optional: save to a DB or in-memory store
-        await videoService.recordStreamAndUpload(streamUrl, plateNumber);
+        await videoService.recordStreamAndUpload(streamUrl, plateNumber , 10);
 
         // You can also broadcast it to frontend clients if needed
         // io.emit("new_live_stream", { plateNumber, streamUrl });
