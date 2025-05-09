@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-    username: { type: String, required: true, unique: true },
+    plateNumber: { type: String, required: true , unique: true },
     primaryNumber: { type: String, required: true },
     secondaryNumber: { type: String } ,
     address: { type: String, required: true },
-    plateNumber: { type: String, required: true },
+    username: { type: String, required: true},
     password: { type: String, required: true },
 }, { timestamps: true });
 

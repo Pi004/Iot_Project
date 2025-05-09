@@ -83,8 +83,17 @@ function initializeWebSocket(server) {
                     broadcastMessages(frameUpload.url);
                 }
                 else if(type == "camera_stream_url"){
-                    ws.send(JSON.stringify({ type: "streamReceived",streamUrl : data.streamUrl }));
-                    broadcastMessages({ type: "streamReceived",streamUrl : data.stream_Url });
+                    let plate ;
+                    if(data.plateNumber === "24:6F:28:28:7C:B8"){
+                        plate = "WB 24 W 9582";
+                    }
+                    ws.plateNumber = plate; // Store plate number in WebSocket instance
+                    const cleanUrl = data.stream_Url;
+                    console.log("URL : -", cleanUrl);
+                    //await video_controller.handleLiveStream(cleanUrl , plate);
+                    ws.send(JSON.stringify({ type: "streamReceived" , plateNumber : plate , streamUrl : cleanUrl }));
+                    broadcast({ type: "streamReceived", plateNumber : plate , streamUrl :cleanUrl });
+                    //broadcast({ type: "streamReceived", plateNumber : plate , streamUrl : data.stream_Url });
                 }
                 else if(type === "VideoUpload"){
                     const videoUpload = await video_controller.handleVideoUpload(data);
@@ -119,9 +128,19 @@ function broadcastMessages(object) {
     const message = object;
     const payload = JSON.stringify(message);
     wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
+        if (client.readyState === WebSocket.OPEN && client.plateNumber === object.plateNumber) {
             client.send(payload);
-            console.log("📡 Sent URL to connected client");
+            console.log(`📡 Sent URL to plateNumber ${object.plateNumber}`);
+        }
+    });
+}
+function broadcast(object) {
+    const message = object;
+    const payload = JSON.stringify(message);
+    wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN ) {
+            client.send(payload);
+            console.log(`📡 Sent URL to all clients`);
         }
     });
 }
@@ -144,4 +163,4 @@ function broadcastNewLocation(location) {
     });
 }
 
-module.exports = {initializeWebSocket , broadcastNewLocation , broadcastMessages};
+module.exports = {initializeWebSocket , broadcastNewLocation , broadcastMessages , broadcast};

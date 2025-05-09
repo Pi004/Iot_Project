@@ -1,5 +1,5 @@
 // ======================== WebSocket Integration ========================
-const socket = new WebSocket("ws://localhost:5000");
+const socket = new WebSocket("ws://10.196.36.90:5000");
 
 socket.onopen = () => {
     console.log("🟢 Connected to WebSocket server");
@@ -24,9 +24,6 @@ function updateStatus(elementId, text, statusClass) {
 }
 
 // ======================== Update GPS Location ========================
-/*function updateGPS(lat=28.7041, lon=77.1025) {
-    document.getElementById("gps-frame").src = `https://maps.google.com/maps?q=${lat},${lon}&output=embed`;
-}*/
 let map, marker;
 function initializeMap(lat = 28.7041, lon = 77.1025) {
     map = L.map("gps-map").setView([lat, lon], 15);
@@ -51,40 +48,73 @@ function updateGPS(lat, lon, speed = 0) {
     document.getElementById("lon-display").innerText = `Lon: ${lon.toFixed(5)}`;
     document.getElementById("speed-display").innerText = `Speed: ${speed.toFixed(1)} km/h`;
 }
+// ======================== Camera-feed ========================
+function showCameraOff() {
+    document.getElementById("camera-off-overlay").classList.remove("hidden");
+}
+function hideCameraOff() {
+    document.getElementById('camera-off-overlay').classList.add('hidden');
+}
+// ========================== Tabbed Interface ========================
+$(document).ready(function () {
+    $('.tab-btn').click(function () {
+        const tabId = $(this).data('tab');
+
+        $('.tab-btn').removeClass('active');
+        $(this).addClass('active');
+
+        $('.tab-content').removeClass('active');
+        $('#' + tabId).addClass('active');
+    });
+});
 // ======================== Handle WebSocket Messages ========================
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
-    const loc = data.getLive.data;
     switch (data.type) {
         case "liveLocation":
+            const loc = data.getLive.data;
             updateGPS(loc.latitude, loc.longitude , loc.speed || 0);
             if(loc.accident === true) {
                 updateStatus("accident-status", "Accident Detected", "not-safe");
+                document.getElementById("accident-status").parentElement.classList.add("alert");
                 sendEmergencyMessage(loc.latitude, loc.longitude);
                 updateStatus("message-status", "Sent", "sent");
             } else {
                 updateStatus("accident-status", "No Accident", "safe");
+                document.getElementById("accident-status").parentElement.classList.remove("alert");
                 updateStatus("message-status", "Pending", "pending");
+
             }
-            if(loc.sleep !== "Awake") {
-                updateStatus("drowsiness-status", "High", "high");
+            if(loc.sleep === true) {
+                updateStatus("drowsiness-status", "Drowsy", "high");
+                document.getElementById("drowsiness-status").parentElement.classList.add("alert");
 
             } else {
                 updateStatus("drowsiness-status", "Normal", "normal");
+                document.getElementById("drowsiness-status").parentElement.classList.remove("alert");
             }
             if(loc.drunk === true) {
                 updateStatus("alcohol-status", "Yes", "yes");
+                document.getElementById("alcohol-status").parentElement.classList.add("alert");
             } else {
                 updateStatus("alcohol-status", "No", "no");
+                document.getElementById("alcohol-status").parentElement.classList.remove("alert");
             }    
-            //updateStatus("accident-status", data.getLast.accident, data.getLast.accident === true ? "not-safe" : "safe");
-            //updateStatus("drowsiness-status", data.getLast.drowsiness, data.getLast.drowsiness === true ? "high" : "normal");
-            //updateStatus("alcohol-status", data.getLast.alcohol, data.status.alcohol === true ? "yes" : "no");
-            //updateStatus("cloud-video-status", data.getLast.cloud_video, data.getLast.cloud_video === "Saved" ? "saved" : "not-saved");
-
             updateGPS(loc.latitude, loc.longitude , loc.speed || 0);
             break;
-        case "drowsinessAlert":
+        case "streamRecieved":
+            const streamUrl = data.streamUrl;
+            document.getElementById("live-video").src = streamUrl;
+            const video = document.getElementById("live-video");
+
+            // Temporarily hide the video while updating source
+            /*video.classList.add('hidden');
+
+            setTimeout(() => {
+                video.src = streamUrl;
+                video.classList.remove('hidden');
+            }, 300);*/ // Add a small delay
+            break;
         case "userRegistered":
             console.log("✅ User Registered:", data.user);
             break;
