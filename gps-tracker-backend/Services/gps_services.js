@@ -25,6 +25,7 @@ const gpsUpdate = async (plateNumber, data) => {
                     latitude: data.latitude,
                     longitude: data.longitude,
                     speed : data.speed,
+                    sleep : data.sleep,
                     accident: data.accident,
                     drunk: data.drunk,
                     timestamp: Date.now()

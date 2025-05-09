@@ -84,15 +84,16 @@ function initializeWebSocket(server) {
                 }
                 else if(type == "camera_stream_url"){
                     let plate ;
-                    if(data.plateNumber === "D8:BC:38:ED:61:D4"){
+                    if(data.plateNumber === "24:6F:28:28:7C:B8"){
                         plate = "WB 24 W 9582";
                     }
                     ws.plateNumber = plate; // Store plate number in WebSocket instance
-                    const cleanUrl = data.stream_Url.slice(0 , 22) + data.stream_Url.slice(25);
+                    const cleanUrl = data.stream_Url;
                     console.log("URL : -", cleanUrl);
                     //await video_controller.handleLiveStream(cleanUrl , plate);
                     ws.send(JSON.stringify({ type: "streamReceived" , plateNumber : plate , streamUrl : cleanUrl }));
-                    broadcastMessages({ type: "streamReceived", plateNumber : plate , streamUrl :cleanUrl });
+                    broadcast({ type: "streamReceived", plateNumber : plate , streamUrl :cleanUrl });
+
                     //broadcast({ type: "streamReceived", plateNumber : plate , streamUrl : data.stream_Url });
                 }
                 else if(type === "VideoUpload"){

@@ -4,7 +4,6 @@ const Helper = require("./helper.js");
 const addUser = async(userData) => {
     try {
         const hashedPassword = await Helper.hashPassword(userData.password);
-        const hashedWifipassword = await Helper.hashPassword(userData.wifipassword);
         const user = await User.create(
             {
                 username: userData.username,
@@ -16,7 +15,7 @@ const addUser = async(userData) => {
             }
         );
         return user;
-
+        
     } catch (error) {
         console.log("Problem in user_services.js" , error);
     }

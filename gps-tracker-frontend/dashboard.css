@@ -207,4 +207,18 @@ body {
         aspect-ratio: 16 / 9;
     }
   }
-  
+  /* Highlighted accident alert */
+.status-card.alert {
+  background-color: rgba(255, 71, 87, 0.2); /* Catchy red-ish background */
+  border: 2px solid #ff4757;               /* Bold red border */
+  border-radius: 12px;
+  padding: 0.8rem;
+  transition: background 0.3s ease;
+}
+
+.status-card.alert h4,
+.status-card.alert .status {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ff6b81; /* Pinkish red text for emphasis */
+}

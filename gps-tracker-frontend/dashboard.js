@@ -76,37 +76,44 @@ socket.onmessage = (event) => {
             updateGPS(loc.latitude, loc.longitude , loc.speed || 0);
             if(loc.accident === true) {
                 updateStatus("accident-status", "Accident Detected", "not-safe");
+                document.getElementById("accident-status").parentElement.classList.add("alert");
                 sendEmergencyMessage(loc.latitude, loc.longitude);
                 updateStatus("message-status", "Sent", "sent");
             } else {
                 updateStatus("accident-status", "No Accident", "safe");
+                document.getElementById("accident-status").parentElement.classList.remove("alert");
                 updateStatus("message-status", "Pending", "pending");
+
             }
-            if(loc.sleep !== "Awake") {
-                updateStatus("drowsiness-status", "High", "high");
+            if(loc.sleep === true) {
+                updateStatus("drowsiness-status", "Drowsy", "high");
+                document.getElementById("drowsiness-status").parentElement.classList.add("alert");
 
             } else {
                 updateStatus("drowsiness-status", "Normal", "normal");
+                document.getElementById("drowsiness-status").parentElement.classList.remove("alert");
             }
             if(loc.drunk === true) {
                 updateStatus("alcohol-status", "Yes", "yes");
+                document.getElementById("alcohol-status").parentElement.classList.add("alert");
             } else {
                 updateStatus("alcohol-status", "No", "no");
+                document.getElementById("alcohol-status").parentElement.classList.remove("alert");
             }    
             updateGPS(loc.latitude, loc.longitude , loc.speed || 0);
             break;
+
         case "streamReceived":
             const streamUrl = data.streamUrl;
             document.getElementById("live-video").src = streamUrl;
             const video = document.getElementById("live-video");
 
             // Temporarily hide the video while updating source
-            video.classList.add('hidden');
-
+            /*video.classList.add('hidden');
             setTimeout(() => {
                 video.src = streamUrl;
                 video.classList.remove('hidden');
-            }, 300); // Add a small delay
+            }, 300);*/ // Add a small delay
             break;
         case "userRegistered":
             console.log("✅ User Registered:", data.user);
