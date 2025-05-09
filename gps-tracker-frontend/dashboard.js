@@ -102,14 +102,14 @@ socket.onmessage = (event) => {
             }    
             updateGPS(loc.latitude, loc.longitude , loc.speed || 0);
             break;
-        case "streamRecieved":
+
+        case "streamReceived":
             const streamUrl = data.streamUrl;
             document.getElementById("live-video").src = streamUrl;
             const video = document.getElementById("live-video");
 
             // Temporarily hide the video while updating source
             /*video.classList.add('hidden');
-
             setTimeout(() => {
                 video.src = streamUrl;
                 video.classList.remove('hidden');

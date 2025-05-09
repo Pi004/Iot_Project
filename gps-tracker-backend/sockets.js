@@ -93,6 +93,7 @@ function initializeWebSocket(server) {
                     //await video_controller.handleLiveStream(cleanUrl , plate);
                     ws.send(JSON.stringify({ type: "streamReceived" , plateNumber : plate , streamUrl : cleanUrl }));
                     broadcast({ type: "streamReceived", plateNumber : plate , streamUrl :cleanUrl });
+
                     //broadcast({ type: "streamReceived", plateNumber : plate , streamUrl : data.stream_Url });
                 }
                 else if(type === "VideoUpload"){

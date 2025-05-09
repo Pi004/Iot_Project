@@ -52,7 +52,7 @@ Ensure you have the following installed:
    ```
 
 ### Frontend Setup
-1. Open `index.html` in a web browser.
+1. Open `landingpage.html` in a web browser.
 2. Ensure the backend is running to retrieve real-time data.
 
 ## How It Works
