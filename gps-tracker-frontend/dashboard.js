@@ -109,7 +109,6 @@ socket.onmessage = (event) => {
 
             // Temporarily hide the video while updating source
             /*video.classList.add('hidden');
-
             setTimeout(() => {
                 video.src = streamUrl;
                 video.classList.remove('hidden');
