@@ -22,7 +22,7 @@ app.use("/api/gps", gps_route);
 app.use("/api/users", user_route);
 
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://Piyush:REeAgR3hJMyxAhFS@iot.6bqdx.mongodb.net/?retryWrites=true&w=majority&appName=iot";
+const MONGO_URI = process.env.MONGO_URI;
 
 // Connect to MongoDB
 
