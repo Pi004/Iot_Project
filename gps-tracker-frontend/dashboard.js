@@ -1,5 +1,5 @@
 // ======================== WebSocket Integration ========================
-const socket = new WebSocket("ws://10.196.36.90:5000");
+const socket = new WebSocket("ws://localhost:5000");
 
 socket.onopen = () => {
     console.log("🟢 Connected to WebSocket server");
@@ -102,7 +102,7 @@ socket.onmessage = (event) => {
             }    
             updateGPS(loc.latitude, loc.longitude , loc.speed || 0);
             break;
-        case "streamRecieved":
+        case "streamReceived":
             const streamUrl = data.streamUrl;
             document.getElementById("live-video").src = streamUrl;
             const video = document.getElementById("live-video");

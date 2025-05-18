@@ -84,15 +84,16 @@ function initializeWebSocket(server) {
                 }
                 else if(type == "camera_stream_url"){
                     let plate ;
-                    if(data.plateNumber === "24:6F:28:28:7C:B8"){
+                    /*if(data.plateNumber === "24:6F:28:28:7C:B8"){
                         plate = "WB 24 W 9582";
-                    }
+                    }*/
+                    plate = data.plateNumber;
                     ws.plateNumber = plate; // Store plate number in WebSocket instance
                     const cleanUrl = data.stream_Url;
                     console.log("URL : -", cleanUrl);
                     //await video_controller.handleLiveStream(cleanUrl , plate);
                     ws.send(JSON.stringify({ type: "streamReceived" , plateNumber : plate , streamUrl : cleanUrl }));
-                    broadcast({ type: "streamReceived", plateNumber : plate , streamUrl :cleanUrl });
+                    broadcastMessages({ type: "streamReceived", plateNumber : plate , streamUrl :cleanUrl });
                     //broadcast({ type: "streamReceived", plateNumber : plate , streamUrl : data.stream_Url });
                 }
                 else if(type === "VideoUpload"){
@@ -138,7 +139,7 @@ function broadcast(object) {
     const message = object;
     const payload = JSON.stringify(message);
     wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN ) {
+        if (client.readyState === WebSocket.OPEN) {
             client.send(payload);
             console.log(`📡 Sent URL to all clients`);
         }
