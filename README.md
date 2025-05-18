@@ -19,6 +19,7 @@ This project is an Arduino-based vehicle tracking and accident alert system that
 ### Frontend:
 - **HTML**
 - **CSS**
+- **Javascript**
 
 ### Hardware:
 - **Arduino Board**
@@ -70,7 +71,7 @@ Ensure you have the following installed:
 ## Future Enhancements
 - Mobile application for real-time tracking.
 - Integration with AI-based accident severity analysis.
-- Enhanced visualization with maps.
+- Enhanced visualization via real-time video feed with automatic cloud storage for later access and analysis.
 
 ## Contributors
 - **Shrushti Chouhan**
