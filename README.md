@@ -6,7 +6,7 @@
 
 <br>
 
-<img src = "https://img.shields.io/github/last-commit/Pi004/Iot_Project?color=blue"/><!--<img src="https://img.shields.io/badge/last%20commit-may-blue" />-->
+<img src = "https://img.shields.io/github/last-commit/Pi004/Proactive-Accident-Mitigation-and-Prevention?color=blue"/><!--<img src="https://img.shields.io/badge/last%20commit-may-blue" />-->
 <img src="https://img.shields.io/badge/javascript-40.0%25-blue" />
 <img src="https://img.shields.io/badge/languages-5-blue" />
 
